@@ -67,6 +67,22 @@ class Homestead
       end
     end
 
+    # Install All The Configured Nginx Sites (HTTPS)
+    settings["sites"].each do |site|
+      config.vm.provision "shell" do |s|
+        if (site.has_key?("hhvm") && site["hhvm"])
+          s.inline = "bash /vagrant/scripts/serve-hhvm-https.sh $1 \"$2\" $3"
+          s.args = [site["map"], site["to"], site["port"] ||= 443]
+        elsif (site.has_key?("ember") && site["ember"])
+          s.inline = "bash /vagrant/scripts/serve-ember-https.sh $1 \"$2\" $3"
+          s.args = [site["map"], site["to"], site["port"] ||= 443]
+        else
+          s.inline = "bash /vagrant/scripts/serve-https.sh $1 \"$2\" $3"
+          s.args = [site["map"], site["to"], site["port"] ||= 443]
+        end
+      end
+    end
+
     # Configure All Of The Configured Databases
     settings["databases"].each do |db|
       config.vm.provision "shell" do |s|
