@@ -22,6 +22,7 @@ class Homestead
     config.vm.network "forwarded_port", guest: 443, host: 44300
     config.vm.network "forwarded_port", guest: 3306, host: 33060
     config.vm.network "forwarded_port", guest: 5432, host: 54320
+    config.vm.network "forwarded_port", guest: 4200, host: 42000
 
     # Add Custom Ports From Configuration
     if settings.has_key?("ports")
@@ -55,6 +56,9 @@ class Homestead
       config.vm.provision "shell" do |s|
           if (site.has_key?("hhvm") && site["hhvm"])
             s.inline = "bash /vagrant/scripts/serve-hhvm.sh $1 \"$2\" $3"
+            s.args = [site["map"], site["to"], site["port"] ||= 80]
+          elsif (site.has_key?("ember") && site["ember"])
+            s.inline = "bash /vagrant/scripts/serve-ember.sh $1 \"$2\" $3"
             s.args = [site["map"], site["to"], site["port"] ||= 80]
           else
             s.inline = "bash /vagrant/scripts/serve.sh $1 \"$2\" $3"
