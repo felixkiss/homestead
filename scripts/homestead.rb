@@ -72,13 +72,13 @@ class Homestead
       config.vm.provision "shell" do |s|
         if (site.has_key?("hhvm") && site["hhvm"])
           s.inline = "bash /vagrant/scripts/serve-hhvm-https.sh $1 \"$2\" $3"
-          s.args = [site["map"], site["to"], site["port"] ||= 443]
+          s.args = [site["map"], site["to"], site["port_https"] ||= 443]
         elsif (site.has_key?("ember") && site["ember"])
           s.inline = "bash /vagrant/scripts/serve-ember-https.sh $1 \"$2\" $3"
-          s.args = [site["map"], site["to"], site["port"] ||= 443]
+          s.args = [site["map"], site["to"], site["port_https"] ||= 443]
         else
           s.inline = "bash /vagrant/scripts/serve-https.sh $1 \"$2\" $3"
-          s.args = [site["map"], site["to"], site["port"] ||= 443]
+          s.args = [site["map"], site["to"], site["port_https"] ||= 443]
         end
       end
     end
